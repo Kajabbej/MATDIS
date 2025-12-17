@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graphs dan Trees - Edukasi Kelompok 1</title>
+    <style>
+        /* --- 1. RESET & BASIC STYLE --- */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #696a6b; /* Background Biru Utama */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* --- 2. WRAPPER UTAMA (KOTAK PUTIH) --- */
+        .wrapper {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 800px; /* Lebar maksimal agar enak dibaca */
+            margin: 0 auto;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        /* --- 3. HEADER & NAVIGASI --- */
+        header {
+            background: linear-gradient(135deg, #dde1e6, #68696a);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        nav {
+            background-color: #f8f9fa;
+            padding: 15px;
+            text-align: center;
+            border-bottom: 2px solid #e9ecef;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #7d7e7f;
+            font-weight: bold;
+            margin: 0 10px;
+            padding: 8px 15px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        nav a:hover {
+            background-color: #999a9b;
+            color: white;
+        }
+
+        /* --- 4. CONTAINER & CARDS --- */
+        .container {
+            padding: 30px;
+        }
+
+        .section-title {
+            color: #007bff;
+            border-bottom: 3px solid #f0f0f0;
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card {
+            background: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 1px solid #e1e4e8;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+
+        /* --- 5. STYLE PROFIL TIM --- */
+        .photo-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .member {
+            text-align: center;
+            width: 120px; /* Ukuran kartu member */
+        }
+
+        .profile-img {
+            width: 120px; /* Ukuran foto diperkecil agar muat 4 */
+            height: 120px;
+            object-fit: cover;
+            object-position: center;
+            border-radius: 50%;
+            border: 4px solid #757575;
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .profile-img:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .member p {
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            color: #444;
+        }
+
+        /* --- 6. STYLE MATERI (SVG & LIST) --- */
+        .svg-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            background-color: #f1f3f5;
+            border-radius: 10px;
+            padding: 15px;
+            overflow-x: auto;
+        }
+
+        .notes-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .notes-list li {
+            background: #e7f1ff;
+            margin-bottom: 8px;
+            padding: 10px 15px;
+            border-radius: 6px;
+            border-left: 5px solid #007bff;
+        }
+
+        /* --- 7. STYLE QUIZ & KALKULATOR --- */
+        .option-label {
+            display: block;
+            margin: 8px 0;
+            cursor: pointer;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+        .option-label:hover { background-color: #f8f9fa; border-color: #007bff; }
+        
+        .btn-action {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .btn-action:hover { background-color: #797b7d; }
+        .btn-green { background-color: #28a745; }
+        .btn-green:hover { background-color: #218838; }
+
+        .result-text { font-weight: bold; margin-top: 15px; display: block; }
+        .correct { color: #28a745; }
+        .wrong { color: #dc3545; }
+
+        .calc-input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 60%;
+            margin-right: 10px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #343a40;
+            color: #fff;
+            font-size: 0.9rem;
+        }
+        /* Style untuk Tabel Materi */
+.table-custom {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    font-size: 0.95rem;
+}
+
+.table-custom th, .table-custom td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+}
+
+.table-custom th {
+    background-color: #007bff;
+    color: white;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+}
+
+.table-custom tr:nth-child(even) {
+    background-color: #f8f9fa; /* Zebra striping */
+}
+
+.table-custom tr:hover {
+    background-color: #e2e6ea;
+}
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+
+    <header>
+        <h1>Graphs dan Trees</h1>
+        <h1>MATEMATIKA DISKRIET</h1>
+        <p>Media Pembelajaran Interaktif Struktur Data</p>
+        <p>PROJECT AKHIR</p>
+            DOSEN PENGAMPU: IBU. Davie Rosa Anamisa
+        </p>
+    </header>
+
+    <nav>
+        <a href="#home">Home & Tim</a>
+        <a href="#materi">Materi</a>
+        <a href="#soal">Soal</a>
+        <a href="#kalkulator">Kalkulator</a>
+    </nav>
+
+    <div class="container" id="home">
+        <h2 class="section-title">Selamat Datang</h2>
+        <div class="card" style="text-align: center;">
+            <p>Website ini dirancang untuk membantu Anda belajar tentang <strong>graphs</strong> (graf) dan <strong>trees</strong> (pohon). Jelajahi materi, jawab soal, dan gunakan kalkulator untuk latihan praktis.</p>
+        </div>
+
+        <h3 style="text-align: center; color: #555; margin-top: 40px;">Di kembangkan oleh: (Kelompok 8)</h3>
+        <p style="text-align: center; font-size: 0.9rem;">Mahasiswa Teknik Informatika - Universitas Trunojoyo Madura</p>
+        
+        <div class="photo-group">
+            <div class="member">
+                <img src="Ghufron.jpeg" alt="MOH. GHUFRON" class="profile-img">
+                <p>MOH. GHUFRON</p>
+            </div>
+            <div class="member">
+                <img src="Arfin.jpeg" alt="ARFIN NUR F." class="profile-img">
+                <p>ARFIN NUR FATAHILLAH</p>
+            </div>
+            <div class="member">
+                <img src="Sudai.jpeg" alt="SUDA'I" class="profile-img">
+                <p>SUDA'I</p>
+            </div>
+            <div class="member">
+                <img src="Rozak.jpg" alt="MOKHAMMAD ROZAK" class="profile-img">
+                <p>MOKHAMMAD ROZAK</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="materi">
+        <h2 class="section-title">Materi Pembelajaran</h2>
+
+        <div class="container" id="materi-graf">
+    <h2 class="section-title">Materi: Teori Graf</h2>
+
+    <div class="card">
+        <h3>1. Definisi Graf</h3>
+        <p>Graf didefinisikan sebagai pasangan himpunan <strong>(V, E)</strong>, ditulis dengan notasi <code>G = (V, E)</code>.</p>
+        <ul class="notes-list">
+            <li><strong>V (Vertex):</strong> Himpunan simpul (node) yang tidak kosong. Contoh: <code>V = {v1, v2, v3, ...}</code>.</li>
+            <li><strong>E (Edge):</strong> Himpunan sisi (busur) yang menghubungkan sepasang simpul. Contoh: <code>E = {e1, e2, ...}</code>.</li>
+        </ul>
+
+        <div class="svg-container">
+            <svg width="300" height="150" viewBox="0 0 300 150">
+                <line x1="50" y1="75" x2="150" y2="25" stroke="#333" stroke-width="2"></line>
+                <line x1="150" y1="25" x2="250" y2="75" stroke="#333" stroke-width="2"></line>
+                <line x1="250" y1="75" x2="150" y2="125" stroke="#333" stroke-width="2"></line>
+                <line x1="150" y1="125" x2="50" y2="75" stroke="#333" stroke-width="2"></line>
+                <line x1="50" y1="75" x2="250" y2="75" stroke="#333" stroke-width="2" stroke-dasharray="5,5"></line> <circle cx="50" cy="75" r="15" fill="#007bff"></circle>  <circle cx="150" cy="25" r="15" fill="#007bff"></circle> <circle cx="250" cy="75" r="15" fill="#007bff"></circle> <circle cx="150" cy="125" r="15" fill="#007bff"></circle> <text x="50" y="80" text-anchor="middle" fill="white" font-size="12" font-weight="bold">1</text>
+                <text x="150" y="30" text-anchor="middle" fill="white" font-size="12" font-weight="bold">2</text>
+                <text x="250" y="80" text-anchor="middle" fill="white" font-size="12" font-weight="bold">3</text>
+                <text x="150" y="130" text-anchor="middle" fill="white" font-size="12" font-weight="bold">4</text>
+            </svg>
+        </div>
+        <p style="text-align: center; font-size: 0.9rem; color: #666;"><em>Contoh Graf G dengan 4 Simpul dan 5 Sisi.</em></p>
+    </div>
+
+    <div class="card">
+        <h3>2. Jenis-Jenis Graf</h3>
+        <p>Berdasarkan strukturnya, graf dibagi menjadi:</p>
+        
+        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 250px; background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #ddd;">
+                <h4 style="margin-top: 0; color: #007bff;">Graf Sederhana</h4>
+                <p style="font-size: 0.9rem;">Graf yang <strong>tidak mengandung</strong> <em>loop</em> (gelung) maupun sisi ganda (<em>multiple edges</em>).</p>
+            </div>
+
+            <div style="flex: 1; min-width: 250px; background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #ddd;">
+                <h4 style="margin-top: 0; color: #dc3545;">Graf Tidak Sederhana</h4>
+                <p style="font-size: 0.9rem;">Graf yang mengandung:</p>
+                <ul style="padding-left: 20px; margin: 0; font-size: 0.9rem;">
+                    <li><strong>Sisi Ganda:</strong> Dua simpul dihubungkan lebih dari satu garis.</li>
+                    <li><strong>Loop:</strong> Sisi yang berawal dan berakhir di simpul yang sama.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>3. Terminologi Penting</h3>
+        <ul class="notes-list">
+            <li>
+                [cite_start]<strong>Ketetanggaan (Adjacent)</strong> [cite: 145]<br>
+                Dua simpul dikatakan bertetangga jika keduanya terhubung langsung oleh sebuah sisi.
+                <br><em>Contoh: Simpul 1 bertetangga dengan 2, tapi tidak dengan 4 (jika tidak ada garis langsung).</em>
+            </li>
+            <li>
+                [cite_start]<strong>Bersisian (Incidency)</strong> [cite: 151]<br>
+                Sisi <code>e = (u, v)</code> dikatakan bersisian dengan simpul <code>u</code> dan simpul <code>v</code>.
+            </li>
+            <li>
+                [cite_start]<strong>Simpul Terpencil (Isolated Vertex)</strong> [cite: 159]<br>
+                Simpul yang tidak mempunyai sisi yang bersisian dengannya (derajatnya 0).
+            </li>
+            <li>
+                [cite_start]<strong>Graf Kosong (Null Graph)</strong> [cite: 165]<br>
+                Graf yang himpunan sisinya (E) adalah himpunan kosong, tetapi himpunan simpulnya (V) ada.
+            </li>
+            <li>
+                [cite_start]<strong>Derajat (Degree)</strong> [cite: 170]<br>
+                Jumlah sisi yang bersisian dengan suatu simpul.
+                <br><em>Notasi: d(v)</em>
+            </li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Contoh Menghitung Derajat</h3>
+        <p>Perhatikan gambar di bawah ini untuk menghitung derajat (degree):</p>
+        
+        <div class="svg-container">
+            <svg width="200" height="150" viewBox="0 0 200 150">
+                <line x1="50" y1="50" x2="150" y2="50" stroke="#333" stroke-width="2"></line>
+                <line x1="50" y1="50" x2="50" y2="120" stroke="#333" stroke-width="2"></line>
+                <circle cx="50" cy="50" r="12" fill="#28a745"></circle> <circle cx="150" cy="50" r="12" fill="#28a745"></circle> <circle cx="50" cy="120" r="12" fill="#28a745"></circle> <circle cx="150" cy="120" r="12" fill="#dc3545"></circle> <text x="50" y="55" text-anchor="middle" fill="white" font-size="10" font-weight="bold">1</text>
+                <text x="150" y="55" text-anchor="middle" fill="white" font-size="10" font-weight="bold">2</text>
+                <text x="50" y="125" text-anchor="middle" fill="white" font-size="10" font-weight="bold">3</text>
+                <text x="150" y="125" text-anchor="middle" fill="white" font-size="10" font-weight="bold">4</text>
+            </svg>
+        </div>
+        
+        <table class="table-custom">
+            <tr>
+                <th>Simpul</th>
+                <th>Derajat / d(v)</th>
+                <th>Keterangan</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>2</td>
+                <td>Terhubung ke simpul 2 dan 3</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>1</td>
+                <td>Hanya terhubung ke simpul 1</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>1</td>
+                <td>Hanya terhubung ke simpul 1</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>0</td>
+                <td><strong>Simpul Terpencil</strong></td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+        <div class="container" id="materi">
+    <h2 class="section-title">Materi: Pohon (Tree)</h2>
+
+    <div class="card">
+        <h3>1. Definisi Pohon & Sirkuit</h3>
+        <p><strong>Pohon (Tree)</strong> adalah graf khusus yang tak berarah, terhubung, dan <strong>tidak mengandung sirkuit</strong>[cite: 5, 6, 7].</p>
+        
+        <div style="background: #eef6ff; padding: 15px; border-radius: 8px; border-left: 4px solid #007bff; margin: 15px 0;">
+            <strong>Apa itu Sirkuit?</strong><br>
+            Sirkuit adalah lintasan (path) yang dimulai dan diakhiri pada titik yang sama[cite: 8]. <br>
+            <em>Contoh:</em> V2 → V3 → V4 → V2 (kembali ke awal).
+        </div>
+        <p>Jika sebuah graf mengandung sirkuit, maka ia <strong>bukan pohon</strong>.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Hutan (Forest)</h3>
+        <p>Hutan adalah kumpulan pohon yang saling lepas (disjoint)[cite: 62].</p>
+        <ul class="notes-list">
+            <li>Dapat didefinisikan sebagai graf <strong>tidak terhubung</strong> yang tidak mengandung sirkuit[cite: 63].</li>
+            <li>Jika graf hutan memiliki komponen-komponen yang terhubung, maka setiap komponen tersebut adalah pohon.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>3. Sifat-Sifat Pohon</h3>
+        <p>Misalkan <em>T = (V, E)</em> adalah graf sederhana dengan jumlah simpul <strong>n</strong>. Berikut sifat ekuivalennya[cite: 88]:</p>
+        <ul class="notes-list">
+            <li>Setiap pasang simpul dihubungkan oleh lintasan tunggal.</li>
+            <li><strong>Rumus Sisi:</strong> Pohon memiliki <code>m = n - 1</code> buah sisi (dimana m=sisi, n=simpul)[cite: 91, 92].</li>
+            <li>Tidak mengandung sirkuit[cite: 92].</li>
+            <li>Penambahan satu sisi saja akan menciptakan tepat satu sirkuit[cite: 93].</li>
+            <li>Semua sisinya adalah <strong>jembatan</strong> (jika dihapus, graf terputus)[cite: 94].</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Pohon Rentang (Spanning Tree)</h3>
+        <p>Pohon rentang adalah graf terhubung yang awalnya memiliki sirkuit (bukan pohon), kemudian diubah menjadi pohon dengan cara <strong>memutuskan sirkuit-sirkuit</strong> yang ada[cite: 95, 96].</p>
+    </div>
+
+    <div class="card">
+        <h3>5. Pohon Biner (Binary Tree)</h3>
+        <p>Pohon biner adalah pohon berakar di mana setiap titik memiliki <strong>paling banyak 2 anak</strong>[cite: 105]:</p>
+        <ul class="notes-list">
+            <li>Anak Kiri (Left Child)</li>
+            <li>Anak Kanan (Right Child)</li>
+        </ul>
+        
+        <div class="svg-container">
+            <svg width="200" height="120" viewBox="0 0 200 120">
+                <line x1="100" y1="30" x2="60" y2="80" stroke="#999" stroke-width="2"></line>
+                <line x1="100" y1="30" x2="140" y2="80" stroke="#999" stroke-width="2"></line>
+                <circle cx="100" cy="30" r="15" fill="#28a745"></circle>
+                <circle cx="60" cy="80" r="15" fill="#28a745"></circle>
+                <circle cx="140" cy="80" r="15" fill="#28a745"></circle>
+                <text x="100" y="35" text-anchor="middle" fill="white" font-size="10">Root</text>
+                <text x="60" y="85" text-anchor="middle" fill="white" font-size="10">Kiri</text>
+                <text x="140" y="85" text-anchor="middle" fill="white" font-size="10">Kanan</text>
+            </svg>
+        </div>
+        <p>Kegunaan: Menyatakan ekspresi aljabar (seperti <code>x/(y+z)</code>), pencarian, dan pengurutan data[cite: 106].</p>
+    </div>
+
+    <div class="card">
+        <h3>6. Prioritas Operator (Ekspresi)</h3>
+        <p>Dalam pembentukan pohon ekspresi, berikut urutan prioritas operator dari tertinggi ke terendah:</p>
+        
+        <table class="table-custom">
+            <thead>
+                <tr>
+                    <th>Tingkat Prioritas</th>
+                    <th>Operator</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Tertinggi</strong></td>
+                    <td>( ) { }</td>
+                </tr>
+                <tr>
+                    <td>Unary</td>
+                    <td>! + - ++ --</td>
+                </tr>
+                <tr>
+                    <td>Aritmatika 1</td>
+                    <td>* / %</td>
+                </tr>
+                <tr>
+                    <td>Aritmatika 2</td>
+                    <td>+ -</td>
+                </tr>
+                <tr>
+                    <td>Relasional</td>
+                    <td>&lt; &gt; &lt;= &gt;=</td>
+                </tr>
+                <tr>
+                    <td>Kesamaan</td>
+                    <td>== !=</td>
+                </tr>
+                <tr>
+                    <td>Logika AND</td>
+                    <td>&&</td>
+                </tr>
+                <tr>
+                    <td><strong>Terendah</strong></td>
+                    <td>OR</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+    <div class="container" id="soal">
+    <h2 class="section-title">Latihan Soal: Graf & Tree</h2>
+
+    <div class="card">
+        <p><strong>Soal 1:</strong> Apa yang mendefinisikan sebuah graf G(V, E)?</p>
+        <label class="option-label"><input type="radio" name="q1" value="a"> Himpunan simpul (V) dan himpunan sisi (E)</label>
+        <label class="option-label"><input type="radio" name="q1" value="b"> Hanya himpunan simpul (V)</label>
+        <label class="option-label"><input type="radio" name="q1" value="c"> Himpunan sisi (E) tanpa simpul</label>
+        <button class="btn-action" onclick="checkAnswer('q1', 'a', 'result1')">Jawab</button>
+        <p id="result1" class="result-text"></p>
+    </div>
+
+    <div class="card">
+        <p><strong>Soal 2:</strong> Jika sebuah pohon (tree) memiliki <em>n</em> simpul, berapa banyak sisi yang dimilikinya?</p>
+        <label class="option-label"><input type="radio" name="q2" value="a"> n</label>
+        <label class="option-label"><input type="radio" name="q2" value="b"> n - 1</label>
+        <label class="option-label"><input type="radio" name="q2" value="c"> 2n</label>
+        <button class="btn-action" onclick="checkAnswer('q2', 'b', 'result2')">Jawab</button>
+        <p id="result2" class="result-text"></p>
+    </div>
+
+    <div class="card">
+        <p><strong>Soal 3:</strong> Apa yang dimaksud dengan derajat (degree) sebuah simpul?</p>
+        <label class="option-label"><input type="radio" name="q3" value="a"> Jarak simpul ke root</label>
+        <label class="option-label"><input type="radio" name="q3" value="b"> Jumlah simpul dalam graf</label>
+        <label class="option-label"><input type="radio" name="q3" value="c"> Jumlah sisi yang bersisian dengan simpul tersebut</label>
+        <button class="btn-action" onclick="checkAnswer('q3', 'c', 'result3')">Jawab</button>
+        <p id="result3" class="result-text"></p>
+    </div>
+
+    <div class="card">
+        <p><strong>Soal 4:</strong> Manakah ciri utama dari sebuah Pohon (Tree)?</p>
+        <label class="option-label"><input type="radio" name="q4" value="a"> Graf tak berarah, terhubung, tidak punya sirkuit</label>
+        <label class="option-label"><input type="radio" name="q4" value="b"> Graf yang memiliki minimal satu sirkuit</label>
+        <label class="option-label"><input type="radio" name="q4" value="c"> Graf yang tidak terhubung</label>
+        <button class="btn-action" onclick="checkAnswer('q4', 'a', 'result4')">Jawab</button>
+        <p id="result4" class="result-text"></p>
+    </div>
+
+    <div class="card
+
+    <div class="container" id="kalkulator">
+    <h2 class="section-title">Kalkulator Pintar</h2>
+
+    <div class="card">
+        <h3>1. Cek Sisi Pohon (Tree)</h3>
+        <p>Sebuah graf disebut <strong>Pohon</strong> jika jumlah sisinya pas (tidak kurang, tidak lebih). Masukkan jumlah simpul (titik) untuk melihat berapa sisi yang seharusnya ada.</p>
+        
+        <div style="background: #eef6ff; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+            <strong>Rumus:</strong> Jumlah Sisi = Jumlah Simpul - 1
+        </div>
+
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <input type="number" id="inputTree" class="calc-input" placeholder="Masukkan jumlah simpul (n)">
+            <button onclick="hitungPohon()" class="btn-action btn-green">Hitung</button>
+        </div>
+        <p id="hasilTree" class="result-text" style="color: #333;">Hasil: ...</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Maksimal Garis (Graf Lengkap)</h3>
+        <p>Jika kamu punya sekian titik, berapa <strong>maksimal garis</strong> yang bisa dibuat agar semua titik saling terhubung?</p>
+        
+        <div style="background: #eef6ff; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+            <strong>Rumus:</strong> n × (n - 1) ÷ 2
+        </div>
+
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <input type="number" id="inputGraf" class="calc-input" placeholder="Masukkan jumlah simpul (n)">
+            <button onclick="hitungGraf()" class="btn-action btn-green">Hitung</button>
+        </div>
+        <p id="hasilGraf" class="result-text" style="color: #333;">Hasil: ...</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Tinggi Minimal Pohon Biner</h3>
+        <p>Jika kamu menyusun data dalam bentuk <strong>Pohon Biner</strong> (cabang dua), berapa tingkat (level) minimal yang dibutuhkan?</p>
+
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <input type="number" id="inputBiner" class="calc-input" placeholder="Masukkan jumlah data (n)">
+            <button onclick="hitungBiner()" class="btn-action btn-green">Hitung</button>
+        </div>
+        <p id="hasilBiner" class="result-text" style="color: #333;">Hasil: ...</p>
+    </div>
+</div>
+    <footer>
+        <p>&copy; 2025 Kelompok 8 - Universitas Trunojoyo Madura</p>
+    </footer>
+
+</div>
+
+<script>
+    function checkAnswer(questionName, correctValue, resultId) {
+        const selected = document.querySelector(`input[name="${questionName}"]:checked`);
+        const result = document.getElementById(resultId);
+        
+        if (!selected) {
+            result.textContent = "⚠️ Pilih jawaban dulu!";
+            result.className = "result-text";
+            result.style.color = "orange";
+        } else if (selected.value === correctValue) {
+            result.textContent = "✅ Benar! Jawaban Anda tepat.";
+            result.className = "result-text correct";
+            result.style.color = "green";
+        } else {
+            result.textContent = "❌ Salah, coba lagi.";
+            result.className = "result-text wrong";
+            result.style.color = "red";
+        }
+    }
+</script>
+<script>
+    // 1. Fungsi Hitung Pohon
+    function hitungPohon() {
+        let n = parseInt(document.getElementById('inputTree').value);
+        let hasil = document.getElementById('hasilTree');
+
+        if (n > 0) {
+            let sisi = n - 1;
+            hasil.innerHTML = `✅ Jika simpulnya <b>${n}</b>, maka harus ada <b>${sisi} sisi</b> agar disebut Pohon.`;
+            hasil.style.color = "green";
+        } else {
+            hasil.innerHTML = "⚠️ Masukkan angka simpul yang benar (minimal 1).";
+            hasil.style.color = "red";
+        }
+    }
+
+    // 2. Fungsi Hitung Graf Lengkap
+    function hitungGraf() {
+        let n = parseInt(document.getElementById('inputGraf').value);
+        let hasil = document.getElementById('hasilGraf');
+
+        if (n > 0) {
+            let maxSisi = (n * (n - 1)) / 2;
+            hasil.innerHTML = `✅ Dengan <b>${n}</b> titik, kamu bisa membuat maksimal <b>${maxSisi} garis</b> penghubung.`;
+            hasil.style.color = "green";
+        } else {
+            hasil.innerHTML = "⚠️ Masukkan angka simpul yang benar.";
+            hasil.style.color = "red";
+        }
+    }
+
+    // 3. Fungsi Hitung Pohon Biner
+    function hitungBiner() {
+        let n = parseInt(document.getElementById('inputBiner').value);
+        let hasil = document.getElementById('hasilBiner');
+
+        if (n > 0) {
+            // Logika: Math.floor(Log2(n))
+            let tinggi = Math.floor(Math.log2(n));
+            hasil.innerHTML = `✅ Untuk <b>${n}</b> data, tinggi pohon minimal adalah <b>${tinggi}</b> level.`;
+            hasil.style.color = "green";
+        } else {
+            hasil.innerHTML = "⚠️ Masukkan jumlah data yang benar.";
+            hasil.style.color = "red";
+        }
+    }
+</script>
+</body>
+</html>
